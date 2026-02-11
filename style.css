@@ -1,47 +1,39 @@
-/* =========================
-   Base
-========================= */
-
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background: transparent; /* OBS用 */
-  font-family: 'Segoe UI', sans-serif;
+body {
+    margin: 0;
+    overflow: hidden;
+    background: transparent;
+    font-family: Arial, sans-serif;
 }
 
-/* =========================
-   Canvas
-========================= */
+/* 右下固定 */
+#heartUI {
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
+/* ハート画像 */
+#heartImg {
+    width: 80px;
+    height: auto;
+    transform-origin: center;
+    filter: drop-shadow(0 0 10px rgba(255,0,0,0.6));
+}
+
+/* BPM数字 */
+#bpm {
+    color: #ff4444;
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(255,0,0,0.7);
+}
+
+/* 心電図キャンバス */
 #ecg {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* =========================
-   BPM Display
-========================= */
-
-#bpmDisplay {
-  position: absolute;
-  bottom: 40px;
-  right: 60px;
-
-  font-size: 28px;
-  font-weight: 600;
-  letter-spacing: 2px;
-
-  color: rgba(255, 150, 180, 0.95);
-
-  text-shadow:
-    0 0 8px rgba(255, 120, 160, 0.8),
-    0 0 16px rgba(255, 120, 160, 0.6);
-
-  transform-origin: center;
-  transition: transform 0.1s linear;
-
-  user-select: none;
-  pointer-events: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
 }
