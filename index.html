@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body{
+  margin:0;
+  background:transparent;
+  overflow:hidden;
+  font-family:sans-serif;
+}
+#bpm{
+  position:absolute;
+  top:10px;
+  left:15px;
+  font-size:22px;
+  color:white;
+}
+#heart{
+  display:inline-block;
+  transition:transform 0.1s ease;
+}
+canvas{
+  position:absolute;
+  bottom:0;
+  left:0;
+}
+</style>
+</head>
+<body>
+
+<div id="bpm">
+  <span id="heart">♡</span>
+  <span id="bpmValue">72</span> BPM
+</div>
+
+<canvas id="ecg"></canvas>
+
+<script>
+const canvas=document.getElementById("ecg");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight-40;
+}
+resize();
+window.onresize=resize;
+
+let currentBPM=72;
+let targetBPM=72;
+let lastBeat=0;
+
+function heartbeatShape(t){
+  let y=0;
+  y+=Math.exp(-Math.pow((t-0.15)*20,2))*0.2;
+  y-=Math.exp(-Math.pow((t-0.3)*80,2))*0.3;
+  y+=Math.exp(-Math.pow((t-0.32)*120,2))*1.2;
+  y-=Math.exp(-Math.pow((t-0.35)*80,2))*0.4;
+  y+=Math.exp(-Math.pow((t-0.55)*25,2))*0.4;
+  return y;
+}
+
+function draw(){
+  ctx.fillStyle="rgba(0,0,0,0.08)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  const now=performance.now();
+  const interval=60000/currentBPM;
+
+  if(now-lastBeat>interval){
+    lastBeat=now;
+    document.getElementById("heart").style.transform="scale(1.3)";
+    setTimeout(()=>document.getElementById("heart").style.transform="scale(1)",80);
+  }
+
+  const progress=(now-lastBeat)/interval;
+  const mid=canvas.height/2;
+  const intensity=Math.min(1,(currentBPM-60)/80);
+  const amp=20+intensity*40;
+
+  ctx.beginPath();
+
+  for(let x=0;x<canvas.width;x++){
+    const t=((x/canvas.width)+progress)%1;
+    const y=mid-(heartbeatShape(t))*amp;
+    if(x===0) ctx.moveTo(x,y);
+    else ctx.lineTo(x,y);
+  }
+
+  const r=255;
+  const g=255-Math.floor(intensity*90);
+  const b=255-Math.floor(intensity*120);
+
+  ctx.strokeStyle=`rgb(${r},${g},${b})`;
+  ctx.lineWidth=1.5;
+  ctx.stroke();
+
+  currentBPM+=(targetBPM-currentBPM)*0.03;
+  document.getElementById("bpmValue").textContent=Math.round(currentBPM);
+
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* === 簡易コメント検知シミュレーション === */
+/* OBSでブラウザソースに ?speed=1 など付けると変化 */
+const params=new URLSearchParams(window.location.search);
+let speed=parseInt(params.get("speed"))||1;
+
+setInterval(()=>{
+  let random=Math.random();
+  if(random<0.3){
+    targetBPM=72+Math.random()*40*speed;
+  }else{
+    targetBPM=72;
+  }
+},2000);
+</script>
+</body>
+</html>
