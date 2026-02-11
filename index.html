@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>Heartbeat Overlay</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Heart Beat UI</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <canvas id="ecg"></canvas>
+<div id="heartUI">
+    <img id="heartImg" src="heart.png">
+    <div id="bpm">72</div>
+</div>
 
-  <div id="bpmDisplay">
-    72 BPM ♥
-  </div>
+<canvas id="ecg"></canvas>
 
-  <script src="config.js"></script>
-  <script src="script.js"></script>
-
+<script src="script.js"></script>
 </body>
 </html>
