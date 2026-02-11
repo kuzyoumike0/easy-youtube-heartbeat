@@ -1,118 +1,82 @@
-const heart = document.getElementById("heartImg");
-const bpmText = document.getElementById("bpm");
-const canvas = document.getElementById("ecg");
-const ctx = canvas.getContext("2d");
+const heart = document.getElementById("heartImg")
+const bpmText = document.getElementById("bpm")
+const flash = document.getElementById("flash")
+const canvas = document.getElementById("ecg")
+const ctx = canvas.getContext("2d")
 
-canvas.width = window.innerWidth;
-canvas.height = 150;
-canvas.style.width = "100%";
-canvas.style.height = "150px";
+let bpm = 72
+let commentSpeed = 0
+let superMode = false
 
-let baseBPM = 72;
-let boost = 0;
-let superBoost = 0;
-let lastBeat = 0;
+canvas.width = window.innerWidth
+canvas.height = 200
 
-function calculateBPM() {
-    let bpm = baseBPM + boost + superBoost;
-    bpm = Math.max(50, Math.min(140, bpm));
-    return Math.floor(bpm);
+// 心電図描画
+let x = 0
+function drawECG(){
+  ctx.clearRect(0,0,canvas.width,canvas.height)
+  ctx.strokeStyle = "#ff66cc"
+  ctx.lineWidth = 2
+  ctx.beginPath()
+
+  for(let i=0;i<canvas.width;i++){
+    let y = 100 + Math.sin((i+x)/20)*10
+    if(Math.random()<0.01){
+      y -= 40
+    }
+    ctx.lineTo(i,y)
+  }
+  ctx.stroke()
+  x += 5
+  requestAnimationFrame(drawECG)
+}
+drawECG()
+
+// 鼓動アニメ
+function beat(){
+  heart.style.transform = "scale(1.2)"
+  setTimeout(()=> heart.style.transform="scale(1)",100)
+}
+setInterval(beat, () => 60000/bpm)
+
+function updateBPM(newBPM){
+  bpm = Math.min(140, Math.max(60,newBPM))
+  bpmText.innerText = bpm
 }
 
-/* ------------------ ハート脈動 ------------------ */
-
-function animateHeart(timestamp) {
-    const bpm = calculateBPM();
-    const beatInterval = 60000 / bpm;
-
-    if (timestamp - lastBeat > beatInterval) {
-        lastBeat = timestamp;
-    }
-
-    const progress = (timestamp - lastBeat) / beatInterval;
-
-    // 心臓っぽい二段階収縮
-    let scale = 1;
-
-    if (progress < 0.15) {
-        scale = 1 + progress * 0.6;
-    } else if (progress < 0.3) {
-        scale = 1.09 - (progress - 0.15) * 0.6;
-    } else {
-        scale = 1;
-    }
-
-    // 微振動
-    const vibration = Math.sin(timestamp / 30) * 0.01;
-
-    heart.style.transform = `scale(${scale}) translateY(${vibration * 10}px)`;
-
-    // BPM数字も連動拡縮
-    bpmText.style.transform = `scale(${1 + (scale - 1) * 0.6})`;
-
-    bpmText.innerText = bpm;
-
-    requestAnimationFrame(animateHeart);
+// フラッシュ
+function triggerFlash(){
+  flash.style.opacity = 0.4
+  setTimeout(()=>flash.style.opacity=0,200)
 }
 
-requestAnimationFrame(animateHeart);
+// ===== YouTube API =====
 
-/* ------------------ 心電図 ------------------ */
+let pageToken = ""
 
-let x = 0;
-let waveIntensity = 1;
+async function fetchComments(){
+  const url = `https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${LIVE_CHAT_ID}&part=snippet,authorDetails&key=${API_KEY}&pageToken=${pageToken}`
 
-function drawECG() {
-    ctx.fillStyle = "rgba(0,0,0,0.05)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const res = await fetch(url)
+  const data = await res.json()
 
-    ctx.strokeStyle = `rgba(255,0,0,0.9)`;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
+  pageToken = data.nextPageToken
 
-    let mid = canvas.height / 2;
+  if(data.items){
+    data.items.forEach(item=>{
+      const isSuper = item.snippet.superChatDetails
+      commentSpeed++
 
-    // よりリアルな波形
-    let spike = Math.sin(x * 0.05) * 10;
+      if(isSuper){
+        updateBPM(130)
+        triggerFlash()
+      } else {
+        updateBPM(72 + commentSpeed*2)
+      }
+    })
+  }
 
-    if (x % 120 < 10) spike = -40 * waveIntensity;
-    if (x % 120 >= 10 && x % 120 < 20) spike = 50 * waveIntensity;
-
-    ctx.moveTo(x, mid);
-    ctx.lineTo(x + 1, mid + spike);
-    ctx.stroke();
-
-    x += 2;
-
-    if (x > canvas.width) {
-        x = 0;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    requestAnimationFrame(drawECG);
+  commentSpeed = 0
 }
 
-drawECG();
-
-/* ------------------ コメント連動用テストブースト ------------------ */
-
-// 本番ではここをYouTube API連動に差し替え
-
-setInterval(() => {
-    boost *= 0.9;
-    superBoost *= 0.8;
-}, 500);
-
-// デモ：5秒ごとに軽ブースト
-setInterval(() => {
-    boost += 5;
-    waveIntensity = 1.5;
-    setTimeout(() => waveIntensity = 1, 500);
-}, 5000);
-
-// デモ：15秒ごとにスパチャ風
-setInterval(() => {
-    superBoost = 30;
-    waveIntensity = 2;
-    setTimeout(() => superBoost = 0, 1500);
-}, 15000);
+setInterval(fetchComments, 3000)
