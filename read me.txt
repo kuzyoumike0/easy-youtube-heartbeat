@@ -1,7 +1,8 @@
-① YouTube Data APIキー取得
-１．https://console.cloud.google.com/
-２．新規プロジェクト作成
-３．APIとサービス → ライブラリ
-４．「YouTube Data API v3」有効化
-５．認証情報 → APIキー作成
-６．コピーしておく。
+① Node.jsインストール
+② フォルダ解凍
+③ config.json編集
+④ 初回だけ
+npm install
+⑤ start.bat ダブルクリック
+⑥ OBSブラウザソースに
+http://localhost:3000
