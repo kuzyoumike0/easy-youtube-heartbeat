@@ -1,5 +1,2 @@
-{
-  "apiKey": "ここにAPIキー",
-  "videoId": "ここに配信動画ID",
-  "port": 3000
-}
+const API_KEY = "ここにYouTubeAPIキー";
+const LIVE_CHAT_ID = "ここにライブチャットID";
