@@ -1,6 +1,6 @@
 const CONFIG = {
-  apiKey: "ここにAPIキー",
-  videoId: "ここにライブの動画ID",
+  apiKey: "ここにあなたのYouTubeDataAPIキー",
+  videoId: "ここにライブ動画ID",
   baseBPM: 72,
-  maxBPM: 130,
+  maxBPM: 130
 };
