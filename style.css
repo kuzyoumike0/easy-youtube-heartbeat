@@ -1,13 +1,47 @@
-body {
+/* =========================
+   Base
+========================= */
+
+html, body {
   margin: 0;
+  padding: 0;
   overflow: hidden;
-  background: transparent;
+  background: transparent; /* OBS用 */
+  font-family: 'Segoe UI', sans-serif;
 }
+
+/* =========================
+   Canvas
+========================= */
+
+#ecg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* =========================
+   BPM Display
+========================= */
 
 #bpmDisplay {
   position: absolute;
-  bottom: 20px;
-  right: 30px;
-  font-size: 20px;
-  color: rgba(255,120,160,0.9);
+  bottom: 40px;
+  right: 60px;
+
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 2px;
+
+  color: rgba(255, 150, 180, 0.95);
+
+  text-shadow:
+    0 0 8px rgba(255, 120, 160, 0.8),
+    0 0 16px rgba(255, 120, 160, 0.6);
+
+  transform-origin: center;
+  transition: transform 0.1s linear;
+
+  user-select: none;
+  pointer-events: none;
 }
