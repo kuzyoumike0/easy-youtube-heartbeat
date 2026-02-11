@@ -1,8 +1,6 @@
-① Node.jsインストール
-② フォルダ解凍
-③ config.json編集
-④ 初回だけ
-npm install
-⑤ start.bat ダブルクリック
-⑥ OBSブラウザソースに
-http://localhost:3000
+① YouTube APIキー取得
+② 配信のライブチャットID取得
+③ config.jsに貼る
+④ OBSでブラウザソース追加
+⑤ ローカルファイル指定
+⑥ 完成
