@@ -1,73 +1,76 @@
 const express = require("express");
 const fetch = require("node-fetch");
 const cors = require("cors");
+const fs = require("fs");
+
+const config = JSON.parse(fs.readFileSync("config.json"));
 
 const app = express();
 app.use(cors());
 app.use(express.static("public"));
 
-const API_KEY = "ここにAPIキー";
-const VIDEO_ID = "ここに配信動画ID";
-
 let liveChatId = null;
-let lastPageToken = "";
-let lastCount = 0;
+let pageToken = "";
 let lastTime = Date.now();
 
 async function getLiveChatId() {
-    const res = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${VIDEO_ID}&key=${API_KEY}`
-    );
-    const data = await res.json();
-    liveChatId = data.items[0].liveStreamingDetails.activeLiveChatId;
+    try {
+        const res = await fetch(
+            `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${config.videoId}&key=${config.apiKey}`
+        );
+        const data = await res.json();
+        liveChatId = data.items[0]?.liveStreamingDetails?.activeLiveChatId;
+    } catch (e) {
+        console.log("LiveChat取得失敗");
+    }
 }
 
 async function getChat() {
     if (!liveChatId) return null;
 
-    const res = await fetch(
-        `https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet,authorDetails&pageToken=${lastPageToken}&key=${API_KEY}`
-    );
+    try {
+        const res = await fetch(
+            `https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet,authorDetails&pageToken=${pageToken}&key=${config.apiKey}`
+        );
+        const data = await res.json();
 
-    const data = await res.json();
-    lastPageToken = data.nextPageToken;
+        pageToken = data.nextPageToken;
 
-    let now = Date.now();
-    let comments = data.items || [];
-    let count = comments.length;
+        const now = Date.now();
+        const diff = (now - lastTime) / 1000;
+        lastTime = now;
 
-    let superChat = false;
-    let memberBoost = 0;
+        let count = 0;
+        let superChat = false;
+        let memberBoost = 0;
 
-    comments.forEach(msg => {
-        if (msg.snippet.superChatDetails) superChat = true;
-        if (msg.authorDetails.isChatSponsor) memberBoost += 2;
-    });
+        (data.items || []).forEach(msg => {
+            count++;
+            if (msg.snippet.superChatDetails) superChat = true;
+            if (msg.authorDetails.isChatSponsor) memberBoost++;
+        });
 
-    let timeDiff = (now - lastTime) / 1000;
-    let speed = count / timeDiff;
+        let speed = count / diff;
 
-    lastTime = now;
-    lastCount = count;
+        return {
+            count,
+            speed,
+            superChat,
+            memberBoost
+        };
 
-    return {
-        count,
-        speed,
-        superChat,
-        memberBoost
-    };
+    } catch (e) {
+        console.log("チャット取得失敗");
+        return null;
+    }
 }
 
 app.get("/data", async (req, res) => {
-    try {
-        const chat = await getChat();
-        res.json(chat || {});
-    } catch {
-        res.json({});
-    }
+    const chat = await getChat();
+    res.json(chat || {});
 });
 
-app.listen(3000, async () => {
+app.listen(config.port, async () => {
     await getLiveChatId();
-    console.log("Server running http://localhost:3000");
+    console.log(`起動：http://localhost:${config.port}`);
 });
