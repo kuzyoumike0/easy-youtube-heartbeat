@@ -2,18 +2,26 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>Heart Beat UI</title>
+<title>HeartOverDrive</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="heartUI">
-    <img id="heartImg" src="heart.png">
+<div id="container">
+
+  <div id="heartUI">
+    <img src="assets/heart.png" id="heartImg">
     <div id="bpm">72</div>
+  </div>
+
+  <canvas id="ecg"></canvas>
+
+  <div id="flash"></div>
+
 </div>
 
-<canvas id="ecg"></canvas>
-
+<script src="config.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
