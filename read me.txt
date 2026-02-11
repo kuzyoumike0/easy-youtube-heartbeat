@@ -1,3 +1,4 @@
+① YouTube Data APIキー取得
 １．https://console.cloud.google.com/
 ２．新規プロジェクト作成
 ３．APIとサービス → ライブラリ
