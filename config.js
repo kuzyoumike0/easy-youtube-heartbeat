@@ -1,6 +1,5 @@
-const CONFIG = {
-  apiKey: "ここにあなたのYouTubeDataAPIキー",
-  videoId: "ここにライブ動画ID",
-  baseBPM: 72,
-  maxBPM: 130
-};
+{
+  "apiKey": "ここにAPIキー",
+  "videoId": "ここに配信動画ID",
+  "port": 3000
+}
