@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+#bpmDisplay {
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  font-size: 20px;
+  color: rgba(255,120,160,0.9);
+}
