@@ -6,23 +6,11 @@ body {
 }
 
 #overlay {
-  position:relative;
   width:100vw;
   height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
-}
-
-#ecg {
-  position:absolute;
-  width:100%;
-  opacity:0;
-}
-
-#wave {
-  stroke-dasharray:2000;
-  stroke-dashoffset:2000;
 }
 
 #text {
@@ -31,38 +19,16 @@ body {
   font-weight:bold;
   text-shadow:
     0 0 10px #ff8ad6,
-    0 0 20px #ff1f88;
-  opacity:1;
+    0 0 30px #ff1f88,
+    0 0 60px #ff4fa3;
   transform:scale(1);
-  transition: transform 0.1s linear;
 }
 
-
-.glitch {
-  animation: glitch 0.2s infinite;
-}
-
-@keyframes glitch {
-  0% { transform:translate(2px,-2px); }
-  50% { transform:translate(-2px,2px); }
-  100% { transform:translate(2px,-2px); }
-}
-
-.flash {
-  animation: flash 0.3s;
-}
-
-@keyframes flash {
-  0% { background:rgba(255,79,163,0); }
-  50% { background:rgba(255,79,163,0.6); }
-  100% { background:rgba(255,79,163,0); }
-}
-
-#controlPanel {
+#setup {
   position:fixed;
-  bottom:10px;
-  left:10px;
+  bottom:20px;
+  left:20px;
   background:#ffd6ec;
-  padding:10px;
-  border-radius:12px;
+  padding:15px;
+  border-radius:15px;
 }
