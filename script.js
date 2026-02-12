@@ -2,6 +2,45 @@ const text = document.getElementById("text");
 const ecg = document.getElementById("ecg");
 const wave = document.getElementById("wave");
 
+let commentCount = 0;
+let lastCommentCount = 0;
+let overDriveActive = false;
+
+let pulseScale = 1;
+let pulseTime = 0;
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  const speed = calculatePulseSpeed();
+  pulseTime += 0.05 * speed;
+
+  const scale = 1 + Math.sin(pulseTime) * 0.08;
+  text.style.transform = `scale(${scale})`;
+}
+
+function calculatePulseSpeed() {
+  const delta = commentCount - lastCommentCount;
+  lastCommentCount = commentCount;
+
+  let speed =
+    CONFIG.basePulse +
+    commentCount * CONFIG.commentInfluence +
+    delta * CONFIG.speedBoostInfluence;
+
+  if (overDriveActive) {
+    speed *= CONFIG.overdriveMultiplier;
+  }
+
+  return Math.min(speed, 4); // 上限制御
+}
+
+function updateCommentCount(count) {
+  commentCount = count;
+}
+
+window.updateCommentCount = updateCommentCount;
+
 function animateWave(speedMultiplier = 1) {
   wave.style.transition = `stroke-dashoffset ${1/speedMultiplier}s linear`;
   wave.style.strokeDashoffset = 0;
@@ -13,46 +52,36 @@ function resetWave() {
 }
 
 function playNormalOverDrive() {
+  overDriveActive = true;
+
   resetWave();
   ecg.style.opacity = 1;
-
-  text.style.opacity = 1;
-  text.style.transform = "scale(1.1)";
-  animateWave(1);
-
-  setTimeout(() => {
-    text.style.transform = "scale(1)";
-  }, 200);
+  animateWave(1.2);
 
   setTimeout(() => {
     ecg.style.opacity = 0;
-    text.style.opacity = 0;
     resetWave();
+    overDriveActive = false;
   }, CONFIG.normalDuration);
 }
 
 function playStrongOverDrive() {
+  overDriveActive = true;
+
   resetWave();
   ecg.style.opacity = 1;
 
-  document.body.classList.add("flash");
-
-  text.style.opacity = 1;
-  text.style.transform = "scale(1.5)";
   text.classList.add("glitch");
-
   animateWave(2);
 
   setTimeout(() => {
-    document.body.classList.remove("flash");
     text.classList.remove("glitch");
-  }, 500);
+  }, 600);
 
   setTimeout(() => {
     ecg.style.opacity = 0;
-    text.style.opacity = 0;
-    text.style.transform = "scale(0.6)";
     resetWave();
+    overDriveActive = false;
   }, CONFIG.rareDuration);
 }
 
@@ -74,17 +103,6 @@ function triggerOverDrive(amount = 0) {
   }
 }
 
-function testNormal() {
-  playNormalOverDrive();
-}
-
-function testRare() {
-  playStrongOverDrive();
-}
-
-function triggerFromInput() {
-  const amount = parseInt(document.getElementById("amount").value || 0);
-  triggerOverDrive(amount);
-}
-
 window.triggerOverDrive = triggerOverDrive;
+
+animate();
