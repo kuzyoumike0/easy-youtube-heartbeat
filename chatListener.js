@@ -17,13 +17,20 @@ function startChat() {
       const messages =
         chatDoc.querySelectorAll("#message");
 
-      const currentCount = messages.length;
-      const speed = currentCount - lastCount;
-
-      lastCount = currentCount;
+      const current = messages.length;
+      const speed = current - lastCount;
+      lastCount = current;
 
       window.updateHeartBySpeed(speed);
 
-    } catch (e) {}
+      // スパチャ検知（簡易）
+      const superChat =
+        chatDoc.querySelector("yt-live-chat-paid-message-renderer");
+
+      if (superChat) {
+        window.triggerSuperChat();
+      }
+
+    } catch(e){}
   }, 1000);
 }
