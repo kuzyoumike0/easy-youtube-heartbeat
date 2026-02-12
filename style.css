@@ -11,17 +11,24 @@ body {
   display:flex;
   justify-content:center;
   align-items:center;
+  flex-direction:column;
 }
 
-#text {
-  font-size:4vw;
+#heart {
+  width:200px;
+  transition: transform 0.05s linear;
+  filter:
+    drop-shadow(0 0 10px #ff8ad6)
+    drop-shadow(0 0 25px #ff1f88);
+}
+
+#bpm {
+  margin-top:15px;
   color:#ff4fa3;
-  font-weight:bold;
+  font-size:32px;
   text-shadow:
     0 0 10px #ff8ad6,
-    0 0 30px #ff1f88,
-    0 0 60px #ff4fa3;
-  transform:scale(1);
+    0 0 20px #ff1f88;
 }
 
 #setup {
