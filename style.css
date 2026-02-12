@@ -1,50 +1,66 @@
 body {
   margin:0;
-  background: transparent;
+  background:transparent;
   overflow:hidden;
-  font-family: "Yu Gothic", sans-serif;
+  font-family: "Arial Rounded MT Bold", sans-serif;
 }
 
-#container {
+#overlay {
   position:relative;
   width:100vw;
   height:100vh;
-}
-
-#heartUI {
-  position:absolute;
-  bottom:30px;
-  right:40px;
-  text-align:center;
-}
-
-#heartImg {
-  width:120px;
-  filter: drop-shadow(0 0 15px #ff4da6);
-  transition: transform 0.1s ease;
-}
-
-#bpm {
-  color:#ff66cc;
-  font-size:32px;
-  text-shadow:0 0 10px #ff1493;
-  margin-top:5px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
 #ecg {
   position:absolute;
-  bottom:0;
   width:100%;
-  height:200px;
+  opacity:0;
 }
 
-#flash {
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:#ff1493;
+#wave {
+  stroke-dasharray:2000;
+  stroke-dashoffset:2000;
+}
+
+#text {
+  font-size:4vw;
+  color:#ff4fa3;
+  font-weight:bold;
+  text-shadow:
+    0 0 10px #ff8ad6,
+    0 0 20px #ff1f88;
   opacity:0;
-  pointer-events:none;
+  transform:scale(0.6);
+}
+
+.glitch {
+  animation: glitch 0.2s infinite;
+}
+
+@keyframes glitch {
+  0% { transform:translate(2px,-2px); }
+  50% { transform:translate(-2px,2px); }
+  100% { transform:translate(2px,-2px); }
+}
+
+.flash {
+  animation: flash 0.3s;
+}
+
+@keyframes flash {
+  0% { background:rgba(255,79,163,0); }
+  50% { background:rgba(255,79,163,0.6); }
+  100% { background:rgba(255,79,163,0); }
+}
+
+#controlPanel {
+  position:fixed;
+  bottom:10px;
+  left:10px;
+  background:#ffd6ec;
+  padding:10px;
+  border-radius:12px;
 }
