@@ -53,3 +53,24 @@ body {
   padding:12px;
   border-radius:15px;
 }
+
+#heartContainer {
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+#heart {
+  width:220px;
+  z-index:2;
+}
+
+#miniECG {
+  position:absolute;
+  width:260px;
+  height:100px;
+  z-index:3;
+  pointer-events:none;
+}
+
