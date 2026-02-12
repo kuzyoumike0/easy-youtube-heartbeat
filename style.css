@@ -2,7 +2,7 @@ body {
   margin:0;
   background:transparent;
   overflow:hidden;
-  font-family: "Arial Rounded MT Bold", sans-serif;
+  font-family: 'Mochiy Pop One', sans-serif;
   transition: background 0.4s;
 }
 
@@ -17,31 +17,19 @@ body {
 }
 
 #heart {
-  width:200px;
-  transition: transform 0.08s linear;
+  width:220px;
+  transition: transform 0.05s linear;
   filter:
-    drop-shadow(0 0 10px #ff8ad6)
-    drop-shadow(0 0 25px #ff1f88);
+    drop-shadow(0 0 15px #ff8ad6)
+    drop-shadow(0 0 35px #ff1f88);
 }
 
 #bpm {
-  margin-top:15px;
+  position:absolute;
+  top:calc(50% - 160px); /* ♥の上に固定 */
+  font-size:34px;
   color:#ff4fa3;
-  font-size:32px;
   text-shadow:
     0 0 10px #ff8ad6,
-    0 0 20px #ff1f88;
-}
-
-#ecgCanvas {
-  position:absolute;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-}
-
-.overdrive {
-  background:radial-gradient(circle,
-    rgba(120,0,0,0.6),
-    rgba(0,0,0,0.9));
+    0 0 25px #ff1f88;
 }
