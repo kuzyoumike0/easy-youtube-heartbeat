@@ -32,9 +32,11 @@ body {
   text-shadow:
     0 0 10px #ff8ad6,
     0 0 20px #ff1f88;
-  opacity:0;
-  transform:scale(0.6);
+  opacity:1;
+  transform:scale(1);
+  transition: transform 0.1s linear;
 }
+
 
 .glitch {
   animation: glitch 0.2s infinite;
