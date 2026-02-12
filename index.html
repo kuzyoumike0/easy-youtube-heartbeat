@@ -13,15 +13,16 @@
 <canvas id="ecgCanvas"></canvas>
 
 <div id="overlay">
+
+  <div id="heartContainer">
+    <canvas id="miniECG"></canvas>
+    <img src="heart.png" id="heart">
+  </div>
+
   <div id="bpm">72 BPM</div>
-  <img src="heart.png" id="heart">
+
 </div>
 
-<div id="setup">
-  <input id="chatUrl" placeholder="YouTubeポップアウトURL">
-  <button onclick="startChat()">接続</button>
-  <button onclick="simulateSuperChat()">スパチャテスト</button>
-</div>
 
 <script src="config.js"></script>
 <script src="script.js"></script>
