@@ -55,7 +55,31 @@ function activateOverdrive() {
 }
 
 function simulateSuperChat() {
-  triggerSuperChat();
+  triggerSuperChatlet offset = 0;
+
+function drawECG() {
+  requestAnimationFrame(drawECG);
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = overdrive ? "#ff0000" : "#ff4fa3";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+
+  const centerY = canvas.height / 2;
+
+  for (let x = 0; x < canvas.width; x++) {
+    const y = centerY +
+      Math.sin((x + offset) * 0.02) * amplitude;
+
+    if (x === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+
+  ctx.stroke();
+  offset += currentBPM * 0.1;
+}
+
 }
 
 function triggerSuperChat() {
@@ -71,3 +95,6 @@ window.triggerSuperChat = triggerSuperChat;
 
 heartbeat();
 drawECG();
+
+
+
