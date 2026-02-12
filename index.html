@@ -2,10 +2,12 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>Heart Pulse Live</title>
+<title>Heart Pulse Pro</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<canvas id="ecgCanvas"></canvas>
 
 <div id="overlay">
   <img src="heart.png" id="heart">
@@ -13,9 +15,9 @@
 </div>
 
 <div id="setup">
-  <h3>YouTubeチャットURL</h3>
-  <input id="chatUrl" placeholder="ポップアウトURL">
+  <input id="chatUrl" placeholder="YouTubeポップアウトURL">
   <button onclick="startChat()">接続</button>
+  <button onclick="simulateSuperChat()">スパチャテスト</button>
 </div>
 
 <script src="config.js"></script>
