@@ -2,5 +2,8 @@ const CONFIG = {
   baseBPM: 72,
   bpmPerComment: 3,
   minBPM: 60,
-  maxBPM: 160
+  maxBPM: 170,
+  overdriveThreshold: 10, // 1秒内コメント数
+  superChatBPM: 140,
+  superChatDuration: 3000
 };
