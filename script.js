@@ -134,5 +134,60 @@ function drawECG() {
 
   ctx.stroke();
 
+  const miniCanvas = document.getElementById("miniECG");
+const miniCtx = miniCanvas.getContext("2d");
+
+miniCanvas.width = 260;
+miniCanvas.height = 100;
+
+let miniOffset = 0;
+
+function drawMiniECG() {
+  requestAnimationFrame(drawMiniECG);
+
+  miniCtx.clearRect(0, 0, miniCanvas.width, miniCanvas.height);
+
+  miniCtx.strokeStyle = overdrive ? "#ff0000" : "#ffffff";
+  miniCtx.lineWidth = 2;
+  miniCtx.shadowBlur = overdrive ? 15 : 8;
+  miniCtx.shadowColor = overdrive ? "#ff0000" : "#ff8ad6";
+
+  miniCtx.beginPath();
+
+  const centerY = miniCanvas.height / 2;
+  const width = miniCanvas.width;
+
+  for (let x = 0; x < width; x++) {
+
+    let phase = (x + miniOffset) % 120;
+    let y = centerY;
+
+    // 小さめP波
+    if (phase > 10 && phase < 20) {
+      y -= Math.sin((phase - 10)/10 * Math.PI) * 8;
+    }
+
+    // 小型QRS
+    if (phase >= 40 && phase <= 42) y += 10;
+    if (phase > 42 && phase < 45) y -= (10 + amplitude/4);
+    if (phase >= 45 && phase <= 48) y += 15;
+
+    // T波
+    if (phase > 70 && phase < 90) {
+      y -= Math.sin((phase - 70)/20 * Math.PI) * 6;
+    }
+
+    if (x === 0) miniCtx.moveTo(x, y);
+    else miniCtx.lineTo(x, y);
+  }
+
+  miniCtx.stroke();
+
+  miniOffset += currentBPM * 0.2;
+}
+
+drawMiniECG();
+
+
   offset += currentBPM * 0.3;
 }
