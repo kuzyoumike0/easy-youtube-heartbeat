@@ -2,8 +2,7 @@ let lastCount = 0;
 
 function startChat() {
   const url = document.getElementById("chatUrl").value;
-
-  if (!url) return alert("URLを入力してください");
+  if (!url) return alert("URLを入力");
 
   document.getElementById("setup").style.display = "none";
 
@@ -15,17 +14,16 @@ function startChat() {
   setInterval(() => {
     try {
       const chatDoc = iframe.contentDocument;
-      const messages = chatDoc.querySelectorAll("#message");
+      const messages =
+        chatDoc.querySelectorAll("#message");
 
       const currentCount = messages.length;
       const speed = currentCount - lastCount;
 
       lastCount = currentCount;
 
-      window.updatePulseBySpeed(speed);
+      window.updateHeartBySpeed(speed);
 
-    } catch (e) {
-      console.log("チャット取得待機中...");
-    }
+    } catch (e) {}
   }, 1000);
 }
