@@ -7,21 +7,27 @@
 </head>
 <body>
 
-<div id="container">
+<div id="overlay">
+  <svg id="ecg" viewBox="0 0 1000 200">
+    <polyline id="wave"
+      points="0,100 100,100 150,60 200,140 250,100 350,100 400,50 450,150 500,100 1000,100"
+      fill="none"
+      stroke="#ff4fa3"
+      stroke-width="4"/>
+  </svg>
 
-  <div id="heartUI">
-    <img src="assets/heart.png" id="heartImg">
-    <div id="bpm">72</div>
-  </div>
+  <div id="text">♥OVER DRIVE♥</div>
+</div>
 
-  <canvas id="ecg"></canvas>
-
-  <div id="flash"></div>
-
+<!-- 設定UI（OBSでは隠せる） -->
+<div id="controlPanel">
+  <button onclick="testNormal()">通常暴走テスト</button>
+  <button onclick="testRare()">強暴走テスト</button>
+  <input type="number" id="amount" placeholder="金額入力">
+  <button onclick="triggerFromInput()">金額で発火</button>
 </div>
 
 <script src="config.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>
