@@ -9,185 +9,123 @@ canvas.height = window.innerHeight;
 let currentBPM = CONFIG.baseBPM;
 let beatInterval = 60000 / currentBPM;
 let amplitude = 25;
-let overdrive = false;
 
-function updateBPM(newBPM) {
+function updateBPM(newBPM){
   currentBPM = Math.max(CONFIG.minBPM,
-    Math.min(CONFIG.maxBPM, newBPM));
+    Math.min(CONFIG.maxBPM,newBPM));
 
   bpmText.innerText = Math.round(currentBPM) + " BPM";
   beatInterval = 60000 / currentBPM;
-
-  updateBPMColor();
+  updateBPMStyle();
 }
 
-function updateBPMColor() {
-  if (currentBPM <= 85) {
-    bpmText.style.color = "#ff4fa3";
-  } else if (currentBPM <= 110) {
-    bpmText.style.color = "#ff1f88";
-  } else if (currentBPM <= 140) {
-    bpmText.style.color = "#ff0000";
-  } else {
-    bpmText.style.color = "#990000";
+function updateBPMStyle(){
+  if(currentBPM < 90){
+    bpmText.style.filter = "brightness(1)";
+  }else if(currentBPM < 120){
+    bpmText.style.filter = "brightness(1.3)";
+  }else{
+    bpmText.style.filter = "brightness(1.6)";
   }
 }
 
-window.updateHeartBySpeed = function(speed) {
-  const target =
-    CONFIG.baseBPM +
-    speed * CONFIG.bpmPerComment;
+function heartbeat(){
+  const interval = 60000/currentBPM;
 
-  amplitude = 25 + speed * 6;
-
-  if (speed >= CONFIG.overdriveThreshold) {
-    activateOverdrive();
-  }
-
-  updateBPM(target);
-};
-
-function heartbeat() {
-  const interval = 60000 / currentBPM;
-
-  // 強拍
-  heart.style.transform = "scale(1.3)";
+  heart.style.transform = "scale(1.32)";
   bpmText.style.transform = "scale(1.1)";
 
-  setTimeout(() => {
+  setTimeout(()=>{
     heart.style.transform = "scale(1.05)";
     bpmText.style.transform = "scale(1)";
-  }, 120);
+  },120);
 
-  // 弱拍
-  setTimeout(() => {
+  setTimeout(()=>{
     heart.style.transform = "scale(1.18)";
-    setTimeout(() => {
-      heart.style.transform = "scale(1)";
-    }, 100);
-  }, 220);
+    setTimeout(()=>{
+      heart.style.transform="scale(1)";
+    },100);
+  },220);
 
-  setTimeout(heartbeat, interval);
-}
-
-function activateOverdrive() {
-  if (overdrive) return;
-
-  overdrive = true;
-  document.body.classList.add("overdrive");
-
-  setTimeout(() => {
-    document.body.classList.remove("overdrive");
-    overdrive = false;
-  }, 2000);
-}
-
-function simulateSuperChat() {
-  updateBPM(CONFIG.superChatBPM);
-  activateOverdrive();
-
-  setTimeout(() => {
-    updateBPM(CONFIG.baseBPM);
-  }, CONFIG.superChatDuration);
+  setTimeout(heartbeat,interval);
 }
 
 heartbeat();
 drawECG();
+drawMiniECG();
 let offset = 0;
 
-function drawECG() {
+function drawECG(){
   requestAnimationFrame(drawECG);
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  ctx.strokeStyle = overdrive ? "#ff0000" : "#ff4fa3";
-  ctx.lineWidth = 3;
+  ctx.strokeStyle="#ff6ec7";
+  ctx.lineWidth=3;
   ctx.beginPath();
 
-  const centerY = canvas.height / 2;
-  const width = canvas.width;
+  const centerY = canvas.height/2;
 
-  for (let x = 0; x < width; x++) {
+  for(let x=0;x<canvas.width;x++){
+    let phase=(x+offset)%200;
+    let y=centerY;
 
-    let phase = (x + offset) % 200;
+    if(phase>20 && phase<40)
+      y-=Math.sin((phase-20)/20*Math.PI)*15;
 
-    let y = centerY;
+    if(phase>=60 && phase<=65) y+=30;
+    if(phase>65 && phase<70) y-=amplitude;
+    if(phase>=70 && phase<=75) y+=40;
 
-    // P波
-    if (phase > 20 && phase < 40) {
-      y -= Math.sin((phase - 20) / 20 * Math.PI) * 15;
-    }
+    if(phase>110 && phase<150)
+      y-=Math.sin((phase-110)/40*Math.PI)*20;
 
-    // QRS
-    if (phase >= 60 && phase <= 65) y += 30;
-    if (phase > 65 && phase < 70) y -= amplitude;
-    if (phase >= 70 && phase <= 75) y += 40;
-
-    // T波
-    if (phase > 110 && phase < 150) {
-      y -= Math.sin((phase - 110) / 40 * Math.PI) * 20;
-    }
-
-    if (x === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
+    if(x===0) ctx.moveTo(x,y);
+    else ctx.lineTo(x,y);
   }
 
   ctx.stroke();
-
-  const miniCanvas = document.getElementById("miniECG");
+  offset+=currentBPM*0.3;
+}
+const miniCanvas = document.getElementById("miniECG");
 const miniCtx = miniCanvas.getContext("2d");
 
-miniCanvas.width = 260;
-miniCanvas.height = 100;
+miniCanvas.width = 280;
+miniCanvas.height = 120;
 
-let miniOffset = 0;
+let miniOffset=0;
 
-function drawMiniECG() {
+function drawMiniECG(){
   requestAnimationFrame(drawMiniECG);
 
-  miniCtx.clearRect(0, 0, miniCanvas.width, miniCanvas.height);
+  miniCtx.clearRect(0,0,miniCanvas.width,miniCanvas.height);
 
-  miniCtx.strokeStyle = overdrive ? "#ff0000" : "#ffffff";
-  miniCtx.lineWidth = 2;
-  miniCtx.shadowBlur = overdrive ? 15 : 8;
-  miniCtx.shadowColor = overdrive ? "#ff0000" : "#ff8ad6";
-
+  miniCtx.strokeStyle="#fff0fa";
+  miniCtx.lineWidth=2;
+  miniCtx.shadowBlur=12;
+  miniCtx.shadowColor="#ff2f92";
   miniCtx.beginPath();
 
-  const centerY = miniCanvas.height / 2;
-  const width = miniCanvas.width;
+  const centerY = miniCanvas.height/2;
 
-  for (let x = 0; x < width; x++) {
+  for(let x=0;x<miniCanvas.width;x++){
+    let phase=(x+miniOffset)%120;
+    let y=centerY;
 
-    let phase = (x + miniOffset) % 120;
-    let y = centerY;
+    if(phase>10 && phase<20)
+      y-=Math.sin((phase-10)/10*Math.PI)*8;
 
-    // 小さめP波
-    if (phase > 10 && phase < 20) {
-      y -= Math.sin((phase - 10)/10 * Math.PI) * 8;
-    }
+    if(phase>=40 && phase<=42) y+=10;
+    if(phase>42 && phase<45) y-=15;
+    if(phase>=45 && phase<=48) y+=15;
 
-    // 小型QRS
-    if (phase >= 40 && phase <= 42) y += 10;
-    if (phase > 42 && phase < 45) y -= (10 + amplitude/4);
-    if (phase >= 45 && phase <= 48) y += 15;
+    if(phase>70 && phase<90)
+      y-=Math.sin((phase-70)/20*Math.PI)*6;
 
-    // T波
-    if (phase > 70 && phase < 90) {
-      y -= Math.sin((phase - 70)/20 * Math.PI) * 6;
-    }
-
-    if (x === 0) miniCtx.moveTo(x, y);
-    else miniCtx.lineTo(x, y);
+    if(x===0) miniCtx.moveTo(x,y);
+    else miniCtx.lineTo(x,y);
   }
 
   miniCtx.stroke();
-
-  miniOffset += currentBPM * 0.2;
-}
-
-drawMiniECG();
-
-
-  offset += currentBPM * 0.3;
+  miniOffset+=currentBPM*0.2;
 }
