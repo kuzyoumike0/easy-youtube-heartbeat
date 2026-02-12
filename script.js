@@ -1,25 +1,33 @@
-const text = document.getElementById("text");
+const heart = document.getElementById("heart");
+const bpmText = document.getElementById("bpm");
 
-let pulseTime = 0;
-let pulseSpeed = 1;
+let currentBPM = CONFIG.baseBPM;
+let beatInterval = 60000 / currentBPM;
 
-function animate() {
-  requestAnimationFrame(animate);
+function updateBPM(newBPM) {
+  currentBPM = Math.max(CONFIG.minBPM,
+    Math.min(CONFIG.maxBPM, newBPM));
 
-  pulseTime += 0.05 * pulseSpeed;
-  const scale = 1 + Math.sin(pulseTime) * 0.1;
-
-  text.style.transform = `scale(${scale})`;
+  bpmText.innerText = Math.round(currentBPM) + " BPM";
+  beatInterval = 60000 / currentBPM;
 }
 
-function updatePulseBySpeed(commentSpeed) {
-  pulseSpeed =
-    CONFIG.basePulse +
-    commentSpeed * CONFIG.speedInfluence;
+window.updateHeartBySpeed = function(commentSpeed) {
+  const targetBPM =
+    CONFIG.baseBPM +
+    commentSpeed * CONFIG.bpmPerComment;
 
-  pulseSpeed = Math.min(pulseSpeed, CONFIG.maxPulse);
+  updateBPM(targetBPM);
+};
+
+function heartbeat() {
+  heart.style.transform = "scale(1.2)";
+
+  setTimeout(() => {
+    heart.style.transform = "scale(1)";
+  }, 120);
+
+  setTimeout(heartbeat, beatInterval);
 }
 
-window.updatePulseBySpeed = updatePulseBySpeed;
-
-animate();
+heartbeat();
